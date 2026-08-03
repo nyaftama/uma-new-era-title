@@ -503,6 +503,21 @@ document.addEventListener('DOMContentLoaded', () => {
         syncLine2FromDetails();
     }
 
+    function checkRestoreFromObihiro(newCourse) {
+        const currentCourse = (newCourse || '').trim();
+        if (previousCourseVal === '帯広' && currentCourse !== '帯広') {
+            if (savedPreObihiroDetails) {
+                if (savedPreObihiroDetails.condition) {
+                    state.detailCondition = savedPreObihiroDetails.condition;
+                    updateSelectMatching('conditionSelect', 'conditionInput', savedPreObihiroDetails.condition, 'conditionCustomWrapper');
+                    flashElement(document.getElementById('conditionSelect'));
+                }
+                savedPreObihiroDetails = null;
+            }
+        }
+        previousCourseVal = currentCourse;
+    }
+
     function onCourseOrDistChange() {
         const currentCourse = (state.detailCourse || '').trim();
 
@@ -521,34 +536,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // 「帯広」から他コースに変更された場合、帯広変更前の状態に復元
-        if (previousCourseVal === '帯広' && currentCourse !== '帯広') {
-            if (savedPreObihiroDetails) {
-                if (savedPreObihiroDetails.fieldType) {
-                    state.detailFieldType = savedPreObihiroDetails.fieldType;
-                    updateSelectMatching('fieldTypeSelect', 'fieldTypeInput', savedPreObihiroDetails.fieldType, null, fieldTypeCharHint);
-                    flashElement(document.getElementById('fieldTypeSelect'));
-                }
-                if (savedPreObihiroDetails.direction) {
-                    state.detailDirection = savedPreObihiroDetails.direction;
-                    updateSelectMatching('directionSelect', null, savedPreObihiroDetails.direction);
-                    flashElement(document.getElementById('directionSelect'));
-                }
-                if (savedPreObihiroDetails.dist) {
-                    state.detailDist = savedPreObihiroDetails.dist;
-                    updateSelectMatching('distSelect', 'distInput', savedPreObihiroDetails.dist, 'distCustomWrapper');
-                    flashElement(document.getElementById('distSelect'));
-                }
-                if (savedPreObihiroDetails.condition) {
-                    state.detailCondition = savedPreObihiroDetails.condition;
-                    updateSelectMatching('conditionSelect', 'conditionInput', savedPreObihiroDetails.condition, 'conditionCustomWrapper');
-                    flashElement(document.getElementById('conditionSelect'));
-                }
-                savedPreObihiroDetails = null;
-            }
-        }
-
-        previousCourseVal = currentCourse;
+        // 「帯広」から他コースに変更された場合、帯広変更前のバ場状態に復元
+        checkRestoreFromObihiro(currentCourse);
         autoUpdateDirection();
     }
 
@@ -926,6 +915,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Update Course, FieldType, Direction, Distance (Keep Weather and Condition untouched)
         if (match.track) {
+            checkRestoreFromObihiro(match.track);
             state.detailCourse = match.track;
             updateSelectMatching('courseSelect', 'courseInput', match.track);
             flashElement(document.getElementById('courseSelect'));
@@ -1511,6 +1501,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const presetData = RACE_PRESETS[rawPreset] || RACE_PRESETS[raceName];
             if (presetData) {
+                if (presetData.course) {
+                    checkRestoreFromObihiro(presetData.course);
+                }
                 state.detailCourse = presetData.course;
                 updateSelectMatching('courseSelect', 'courseInput', presetData.course);
                 flashElement(document.getElementById('courseSelect'));
