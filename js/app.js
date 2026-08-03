@@ -1892,7 +1892,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentGifBlobUrl = URL.createObjectURL(blob);
 
                 // Set tweet URL for share button
-                const tweetText = encodeURIComponent(`「${origLine1}」のレース名カットGIFを作成しました！\n#ウマ娘 #新時代の扉 #劇場版レース名メーカー\n`);
+                const tweetText = encodeURIComponent(`「${origLine1}」のレース名カットGIFを作成しました！\n#ウマ娘 #劇場版レース名メーカー\n`);
                 const tweetUrl = `https://twitter.com/intent/tweet?text=${tweetText}`;
                 if (gifTwitterShareBtn) gifTwitterShareBtn.href = tweetUrl;
 
