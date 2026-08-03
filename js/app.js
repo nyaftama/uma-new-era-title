@@ -1318,15 +1318,17 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isHeic) {
                 showToast('HEIC画像を変換中...', 4000);
                 try {
-                    if (typeof heic2any === 'undefined') {
+                    const converter = (typeof HeicTo !== 'undefined') ? HeicTo :
+                                      (typeof heicTo !== 'undefined') ? heicTo :
+                                      (window.HeicTo || window.heicTo || null);
+                    if (!converter) {
                         showToast('HEIC画像の変換に対応していません。JPEG/PNG画像をご利用ください');
                         return;
                     }
 
-                    const heicBlob = new Blob([file], { type: 'image/heic' });
-                    const convertedBlob = await heic2any({
-                        blob: heicBlob,
-                        toType: 'image/jpeg',
+                    const convertedBlob = await converter({
+                        blob: file,
+                        type: 'image/jpeg',
                         quality: 0.90
                     });
 
