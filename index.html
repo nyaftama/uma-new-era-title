@@ -2,7 +2,7 @@
 <html lang="ja">
 
 <head>
-    <!-- Google tag (gtag.js) -->
+    <!-- Googleアナリティクス -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2RNJ72H75W"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- Prevent HTML Cache -->
+    <!-- キャッシュ制御 -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -32,22 +32,21 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
 
-    <!-- PapaParse for CSV parsing -->
+    <!-- CSVパースライブラリ -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
-    <!-- HEIC / HEIF Image Converter (heic-to) -->
+    <!-- HEIC画像変換ライブラリ -->
     <script src="https://cdn.jsdelivr.net/npm/heic-to/dist/iife/heic-to.js"></script>
 
-    <link rel="stylesheet" href="css/style.css?v=1.04a">
+    <link rel="stylesheet" href="css/style.css?v=1.05f">
 </head>
 
 <body>
-
     <div class="container">
-        <!-- Header Meta -->
+        <!-- ヘッダーメタ情報 -->
         <div class="header-meta">
             <div class="version-group">
-                <span class="version-badge">v1.04a</span>
+                <span class="version-badge">v1.05</span>
                 <a href="https://github.com/nyaftama/uma-new-era-title#%E6%9B%B4%E6%96%B0%E5%B1%A5%E6%AD%B4"
                     target="_blank" rel="noopener noreferrer" class="changelog-link">更新履歴</a>
             </div>
@@ -56,7 +55,7 @@
             </a>
         </div>
 
-        <!-- Title Header -->
+        <!-- タイトル -->
         <h1 class="main-title">
             劇場版レース名メーカー<br>
             <span class="sub-title">「新時代の扉」風 画像作成ツール</span>
@@ -84,15 +83,24 @@
                     <line x1="10" y1="14" x2="21" y2="3"></line>
                 </svg>
             </a>
+            <a href="https://nyaftama.github.io/" target="_blank" rel="noopener noreferrer" class="tool-link-subtle">
+                <span>すべて見る</span>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+            </a>
         </div>
 
-        <!-- Card 1: Settings & Input -->
+        <!-- 設定・入力エリア -->
         <div class="card">
             <div class="card-title">
                 <span>画像とテキストの設定</span>
             </div>
 
-            <!-- Image Upload Dropzone -->
+            <!-- 画像アップロード -->
             <div id="dropzone" class="dropzone">
                 <svg class="dropzone-icon" viewBox="0 0 24 24">
                     <path
@@ -103,14 +111,14 @@
                 <input type="file" id="fileInput" class="file-input" accept="image/*,.heic,.heif">
             </div>
 
-            <!-- Dropzone Privacy Note -->
+            <!-- プライバシー注記 -->
             <p class="dropzone-privacy-note">
                 <svg class="privacy-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                     <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                 </svg>
-                <span>画像はブラウザー内で処理され、サーバー等へアップロードされることはありません。</span>
+                <span>画像はブラウザー内で処理されます。<br>サーバー等へアップロードされることはありません。</span>
             </p>
 
             <div class="dropzone-controls">
@@ -124,7 +132,7 @@
 
             <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
 
-            <!-- 1st Line Input: Race Name with Autocomplete Suggest -->
+            <!-- 1行目: レース名入力（自動補完対応） -->
             <div class="form-group">
                 <label for="textLine1" class="form-label form-label-flex">
                     <span>レース名</span>
@@ -146,7 +154,7 @@
                     <span>エラーが発生しました</span>
                 </div>
 
-                <!-- Quick Presets Chips -->
+                <!-- プリセット選択 -->
                 <div class="presets-wrapper">
                     <button type="button" class="preset-chip" data-preset="東京優駿">東京優駿</button>
                     <button type="button" class="preset-chip" data-preset="皐月賞">皐月賞</button>
@@ -166,20 +174,23 @@
                         <path
                             d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
                     </svg>
-                    <span>入力候補やプリセットを選択すると、自動的に対応するレース情報がセットされます。</span>
+                    <span>入力候補やプリセットを選択すると、自動的に対応するレース情報がセットされます。任意のレース名の入力も可能です。</span>
                 </p>
             </div>
 
             <hr style="border: none; border-top: 1px dashed #eee; margin: 18px 0;">
 
-            <!-- 2nd Line Input: Race Details -->
+            <!-- 2行目: レース詳細設定 -->
             <div class="form-group">
                 <label class="form-label">レース情報</label>
 
                 <div class="race-details-grid">
                     <!-- レース場 -->
-                    <div class="detail-item-box">
-                        <span class="detail-item-label">レース場</span>
+                    <div class="detail-item-box" id="detailBoxCourse">
+                        <div class="detail-item-header">
+                            <span class="detail-item-label">レース場</span>
+                            <input type="checkbox" id="enableCourse" class="detail-checkbox" title="レース場を表示" checked>
+                        </div>
                         <select id="courseSelect" class="select-control">
                             <option value="札幌">札幌</option>
                             <option value="函館">函館</option>
@@ -239,14 +250,18 @@
                             <option value="ロンシャン">ロンシャン</option>
                             <option value="custom">カスタム...</option>
                         </select>
+                        <a href="#" class="custom-shortcut-link" data-target="courseSelect" role="button">カスタム</a>
                         <input type="text" id="courseInput" class="detail-custom-input" value="東京" placeholder="レース場名"
                             style="display: none;">
                         <span id="courseCharHint" class="input-char-hint" style="display: none;">10文字まで</span>
                     </div>
 
                     <!-- コース -->
-                    <div class="detail-item-box">
-                        <span class="detail-item-label">コース</span>
+                    <div class="detail-item-box" id="detailBoxFieldType">
+                        <div class="detail-item-header">
+                            <span class="detail-item-label">コース</span>
+                            <input type="checkbox" id="enableFieldType" class="detail-checkbox" title="コースを表示" checked>
+                        </div>
                         <select id="fieldTypeSelect" class="select-control">
                             <option value="芝" selected>芝</option>
                             <option value="ダート">ダート</option>
@@ -254,14 +269,18 @@
                             <option value="オールウェザー">オールウェザー</option>
                             <option value="custom">カスタム...</option>
                         </select>
+                        <a href="#" class="custom-shortcut-link" data-target="fieldTypeSelect" role="button">カスタム</a>
                         <input type="text" id="fieldTypeInput" class="detail-custom-input" value="芝" placeholder="コース"
                             style="display: none;">
                         <span id="fieldTypeCharHint" class="input-char-hint" style="display: none;">10文字まで</span>
                     </div>
 
                     <!-- 回り -->
-                    <div class="detail-item-box">
-                        <span class="detail-item-label">回り</span>
+                    <div class="detail-item-box" id="detailBoxDirection">
+                        <div class="detail-item-header">
+                            <span class="detail-item-label">回り</span>
+                            <input type="checkbox" id="enableDirection" class="detail-checkbox" title="回りを表示" checked>
+                        </div>
                         <select id="directionSelect" class="select-control">
                             <option value="左" selected>左</option>
                             <option value="右">右</option>
@@ -274,8 +293,11 @@
                     </div>
 
                     <!-- 距離 -->
-                    <div class="detail-item-box">
-                        <span class="detail-item-label">距離</span>
+                    <div class="detail-item-box" id="detailBoxDist">
+                        <div class="detail-item-header">
+                            <span class="detail-item-label">距離</span>
+                            <input type="checkbox" id="enableDist" class="detail-checkbox" title="距離を表示" checked>
+                        </div>
                         <select id="distSelect" class="select-control">
                             <option value="1000m">1000m</option>
                             <option value="1200m">1200m</option>
@@ -297,6 +319,7 @@
                             <option value="3600m">3600m</option>
                             <option value="custom">カスタム...</option>
                         </select>
+                        <a href="#" class="custom-shortcut-link" data-target="distSelect" role="button">カスタム</a>
                         <div id="distCustomWrapper" class="custom-input-with-unit" style="display: none;">
                             <input type="text" id="distInput" class="detail-custom-input" value=""
                                 placeholder="例: 2400">
@@ -305,8 +328,11 @@
                     </div>
 
                     <!-- 天候 -->
-                    <div class="detail-item-box">
-                        <span class="detail-item-label">天候</span>
+                    <div class="detail-item-box" id="detailBoxWeather">
+                        <div class="detail-item-header">
+                            <span class="detail-item-label">天候</span>
+                            <input type="checkbox" id="enableWeather" class="detail-checkbox" title="天候を表示" checked>
+                        </div>
                         <select id="weatherSelect" class="select-control">
                             <option value="晴">晴</option>
                             <option value="曇" selected>曇</option>
@@ -318,8 +344,11 @@
                     </div>
 
                     <!-- バ場状態 -->
-                    <div class="detail-item-box">
-                        <span class="detail-item-label">バ場状態</span>
+                    <div class="detail-item-box" id="detailBoxCondition">
+                        <div class="detail-item-header">
+                            <span class="detail-item-label">バ場状態</span>
+                            <input type="checkbox" id="enableCondition" class="detail-checkbox" title="バ場状態を表示" checked>
+                        </div>
                         <select id="conditionSelect" class="select-control">
                             <option value="良">良</option>
                             <option value="稍重">稍重</option>
@@ -327,6 +356,7 @@
                             <option value="不良">不良</option>
                             <option value="custom">バ場水分...</option>
                         </select>
+                        <a href="#" class="custom-shortcut-link" data-target="conditionSelect" role="button">カスタム</a>
                         <div id="conditionCustomWrapper" class="custom-input-with-unit" style="display: none;">
                             <input type="text" id="conditionInput" class="detail-custom-input" value=""
                                 placeholder="例: 1.5">
@@ -338,13 +368,13 @@
 
         </div>
 
-        <!-- Card 2: Preview Canvas Area -->
+        <!-- プレビューエリア -->
         <div class="card canvas-card">
             <div class="card-title" style="width: 100%;">
-                <span>プレビュー（文字や画像を移動できます）</span>
+                <span>プレビュー</span>
             </div>
 
-            <!-- Canvas Toolbar Controls -->
+            <!-- ツールバー操作 -->
             <div class="canvas-toolbar">
                 <div class="toolbar-toggle-group">
                     <label class="letterbox-toggle is-active" id="letterboxToggle" title="上下に黒帯を追加">
@@ -417,7 +447,7 @@
                 </button>
             </div>
 
-            <!-- Advanced Settings Accordion -->
+            <!-- 詳細設定アコーディオン -->
             <details class="advanced-settings">
                 <summary>詳細設定（文字サイズ・位置・画像拡大率・明るさ）</summary>
 
@@ -471,29 +501,29 @@
                     </div>
                 </div>
             </details>
+
+            <!-- アクションボタン -->
+            <div class="btn-group">
+                <button type="button" id="generateBtn" class="issue-btn issue-btn-secondary">
+                    静止画を生成
+                </button>
+                <button type="button" id="generateGifBtn" class="issue-btn">
+                    GIFアニメを生成
+                </button>
+            </div>
         </div>
 
-        <!-- Main Action Buttons -->
-        <div class="btn-group">
-            <button type="button" id="generateBtn" class="btn btn-primary">
-                レース名画像を生成
-            </button>
-            <button type="button" id="generateGifBtn" class="btn btn-gif">
-                GIFアニメを生成
-            </button>
-        </div>
-
-        <!-- Footer -->
+        <!-- フッター -->
         <footer>
             <p>※当ツールは「ウマ娘 プリティーダービー」の非公式ツールです。</p>
             <p>&copy; 2026 nyaftama</p>
         </footer>
     </div>
 
-    <!-- Save / Share Modal -->
+    <!-- 保存・共有モーダル -->
     <div id="shareModal" class="modal-overlay">
         <div class="modal-content">
-            <!-- Step 1: Default View -->
+            <!-- 静止画表示 -->
             <div id="shareStep1">
                 <h3 class="modal-title">レース名画像が完成しました！</h3>
                 <p class="modal-desc">
@@ -522,17 +552,17 @@
                 </div>
             </div>
 
-            <!-- Step GIF: GIF Animation -->
+            <!-- GIFアニメ表示 -->
             <div id="shareStepGif" style="display: none;">
                 <h3 class="modal-title" id="gifModalTitle">GIFアニメを生成中...</h3>
 
-                <!-- Loading State -->
+                <!-- 生成中表示 -->
                 <div id="gifLoadingState" class="gif-loading-area">
                     <div class="gif-spinner"></div>
                     <p class="modal-desc">しばらくお待ちください</p>
                 </div>
 
-                <!-- Result State (shown when encoding completes) -->
+                <!-- 生成完了表示 -->
                 <div id="gifResultState" style="display: none;">
                     <p class="modal-desc">
                         画像を長押し（または右クリック）でデバイスに保存できます。<br>
@@ -542,7 +572,7 @@
                     <div class="modal-image-wrapper">
                         <img id="gifPreview" src="" alt="GIFアニメプレビュー">
                     </div>
-                    <!-- GIF Seekbar / Time Progress Display -->
+                    <!-- GIFシークバー表示 -->
                     <div class="gif-seekbar-container">
                         <div class="gif-seekbar-track">
                             <div id="gifSeekbarFill" class="gif-seekbar-fill"></div>
@@ -571,11 +601,11 @@
         </div>
     </div>
 
-    <!-- Toast Notification -->
+    <!-- トースト通知 -->
     <div id="toast" class="toast"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.js"></script>
-    <script src="js/app.js?v=1.04a" defer></script>
+    <script src="js/app.js?v=1.05" defer></script>
 </body>
 
 </html>

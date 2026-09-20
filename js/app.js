@@ -21,6 +21,14 @@ document.addEventListener('DOMContentLoaded', () => {
         detailDist: '2400m',
         detailWeather: '曇',
         detailCondition: '重',
+        detailEnabled: {
+            course: true,
+            fieldType: true,
+            direction: true,
+            dist: true,
+            weather: true,
+            condition: true
+        },
 
         isCanvasLocked: false,
         textSizeLine1: 188, // Line 1 font size default: 188px
@@ -412,14 +420,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Line 2 Detail Controls Sync (6 items)
     function syncLine2FromDetails() {
-        const parts = [
-            formatItemSpace(state.detailCourse),
-            formatItemSpace(state.detailFieldType),
-            formatItemSpace(state.detailDirection),
-            formatItemSpace(state.detailDist),
-            formatItemSpace(state.detailWeather),
-            formatItemSpace(state.detailCondition)
-        ].filter(p => p.length > 0);
+        const parts = [];
+        if (state.detailEnabled.course && state.detailCourse) {
+            const val = formatItemSpace(state.detailCourse);
+            if (val) parts.push(val);
+        }
+        if (state.detailEnabled.fieldType && state.detailFieldType) {
+            const val = formatItemSpace(state.detailFieldType);
+            if (val) parts.push(val);
+        }
+        if (state.detailEnabled.direction && state.detailDirection) {
+            const val = formatItemSpace(state.detailDirection);
+            if (val) parts.push(val);
+        }
+        if (state.detailEnabled.dist && state.detailDist) {
+            const val = formatItemSpace(state.detailDist);
+            if (val) parts.push(val);
+        }
+        if (state.detailEnabled.weather && state.detailWeather) {
+            const val = formatItemSpace(state.detailWeather);
+            if (val) parts.push(val);
+        }
+        if (state.detailEnabled.condition && state.detailCondition) {
+            const val = formatItemSpace(state.detailCondition);
+            if (val) parts.push(val);
+        }
 
         const joined = parts.join(ITEM_BETWEEN_SPACE);
         state.textLine2 = joined;
@@ -560,12 +585,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function setupCustomDetailPair(selectEl, inputEl, stateProp, wrapperEl = null, hintEl = null, onUpdate = null) {
         if (!selectEl) return;
+        const boxEl = selectEl.closest('.detail-item-box');
 
         selectEl.addEventListener('change', (e) => {
             const val = e.target.value;
             const targetDisplayEl = wrapperEl || inputEl;
 
             if (val === 'custom') {
+                if (boxEl) boxEl.classList.add('is-custom');
                 if (targetDisplayEl) targetDisplayEl.style.display = 'block';
                 if (hintEl) hintEl.style.display = 'block';
                 if (inputEl) {
@@ -591,6 +618,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     inputEl.focus();
                 }
             } else {
+                if (boxEl) boxEl.classList.remove('is-custom');
                 if (targetDisplayEl) targetDisplayEl.style.display = 'none';
                 if (hintEl) hintEl.style.display = 'none';
                 state[stateProp] = val;
@@ -639,12 +667,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const wrapperEl = wrapperId ? document.getElementById(wrapperId) : null;
         const hintEl = hintId ? document.getElementById(hintId) : null;
         if (!selectEl) return;
+        const boxEl = selectEl.closest('.detail-item-box');
 
         const targetDisplayEl = wrapperEl || inputEl;
         const matchingOption = Array.from(selectEl.options).find(opt => opt.value === val);
 
         if (matchingOption) {
             selectEl.value = matchingOption.value;
+            if (boxEl) boxEl.classList.remove('is-custom');
             if (inputEl) {
                 if (selectId === 'distSelect' && val) {
                     inputEl.value = val.replace(/[^\d]/g, '');
@@ -658,6 +688,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (hintEl) hintEl.style.display = 'none';
         } else if (Array.from(selectEl.options).some(opt => opt.value === 'custom')) {
             selectEl.value = 'custom';
+            if (boxEl) boxEl.classList.add('is-custom');
             if (inputEl) {
                 if (selectId === 'distSelect' && val) {
                     inputEl.value = val.replace(/[^\d]/g, '');
@@ -670,23 +701,201 @@ document.addEventListener('DOMContentLoaded', () => {
             if (targetDisplayEl) targetDisplayEl.style.display = 'block';
             if (hintEl) hintEl.style.display = 'block';
         }
+        if (selectEl._updateDropdownDisplay) {
+            selectEl._updateDropdownDisplay();
+        }
     }
 
     const flashTimeouts = new WeakMap();
 
     function flashElement(el) {
         if (!el) return;
-        if (flashTimeouts.has(el)) {
-            clearTimeout(flashTimeouts.get(el));
+        let target = el;
+        if (el._customDropdown) {
+            target = el._customDropdown.querySelector('.dropdown-trigger') || el;
         }
-        el.classList.remove('flash-updated');
-        void el.offsetWidth;
-        el.classList.add('flash-updated');
+        if (flashTimeouts.has(target)) {
+            clearTimeout(flashTimeouts.get(target));
+        }
+        target.classList.remove('flash-updated');
+        void target.offsetWidth;
+        target.classList.add('flash-updated');
         const timerId = setTimeout(() => {
-            el.classList.remove('flash-updated');
-            flashTimeouts.delete(el);
+            target.classList.remove('flash-updated');
+            flashTimeouts.delete(target);
         }, 1050);
-        flashTimeouts.set(el, timerId);
+        flashTimeouts.set(target, timerId);
+    }
+
+    function scrollActiveItemToCenter(menu) {
+        if (!menu) return;
+        const activeItem = menu.querySelector('.dropdown-item.active');
+        if (activeItem) {
+            requestAnimationFrame(() => {
+                const targetScrollTop = activeItem.offsetTop - (menu.clientHeight / 2) + (activeItem.clientHeight / 2);
+                menu.scrollTop = targetScrollTop;
+            });
+        }
+    }
+
+    function enhanceSelectToCustomDropdown(selectEl) {
+        if (!selectEl || selectEl._customDropdown) return;
+
+        selectEl.style.display = 'none';
+
+        const dropdown = document.createElement('div');
+        dropdown.className = 'custom-dropdown';
+        dropdown.id = selectEl.id + 'Dropdown';
+
+        const trigger = document.createElement('button');
+        trigger.type = 'button';
+        trigger.className = 'dropdown-trigger';
+        trigger.id = selectEl.id + 'Trigger';
+        trigger.setAttribute('aria-haspopup', 'listbox');
+        trigger.setAttribute('aria-expanded', 'false');
+
+        const selectedText = document.createElement('span');
+        selectedText.className = 'dropdown-selected-text';
+        selectedText.id = selectEl.id + 'SelectedText';
+
+        const chevron = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        chevron.setAttribute('class', 'dropdown-chevron');
+        chevron.setAttribute('viewBox', '0 0 24 24');
+        chevron.setAttribute('width', '14');
+        chevron.setAttribute('height', '14');
+        chevron.setAttribute('fill', 'none');
+        chevron.setAttribute('stroke', 'currentColor');
+        chevron.setAttribute('stroke-width', '2');
+        chevron.setAttribute('stroke-linecap', 'round');
+        chevron.setAttribute('stroke-linejoin', 'round');
+        chevron.innerHTML = '<path d="M6 9l6 6 6-6" />';
+
+        trigger.appendChild(selectedText);
+        trigger.appendChild(chevron);
+        dropdown.appendChild(trigger);
+
+        const menu = document.createElement('div');
+        menu.className = 'dropdown-menu';
+        menu.id = selectEl.id + 'Menu';
+        menu.setAttribute('role', 'listbox');
+        dropdown.appendChild(menu);
+
+        function populateItems() {
+            menu.innerHTML = '';
+            Array.from(selectEl.options).forEach(opt => {
+                const item = document.createElement('button');
+                item.type = 'button';
+                item.className = 'dropdown-item' + (opt.value === selectEl.value ? ' active' : '');
+                item.dataset.value = opt.value;
+                item.textContent = opt.textContent;
+                item.setAttribute('role', 'option');
+
+                item.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (selectEl.value !== opt.value) {
+                        selectEl.value = opt.value;
+                        selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
+                    closeDropdown();
+                });
+
+                menu.appendChild(item);
+            });
+
+            updateSelectedDisplay();
+        }
+
+        function updateSelectedDisplay() {
+            const selectedOpt = selectEl.options[selectEl.selectedIndex] || selectEl.options[0];
+            if (selectedOpt) {
+                selectedText.textContent = selectedOpt.textContent;
+            }
+            menu.querySelectorAll('.dropdown-item').forEach(item => {
+                if (item.dataset.value === selectEl.value) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
+
+        function openDropdown() {
+            document.querySelectorAll('.custom-dropdown.open').forEach(d => {
+                if (d !== dropdown) {
+                    d.classList.remove('open');
+                    d.querySelector('.dropdown-trigger')?.setAttribute('aria-expanded', 'false');
+                    d.closest('.detail-item-box')?.classList.remove('is-dropdown-open');
+                }
+            });
+            dropdown.classList.add('open');
+            trigger.setAttribute('aria-expanded', 'true');
+            dropdown.closest('.detail-item-box')?.classList.add('is-dropdown-open');
+            scrollActiveItemToCenter(menu);
+        }
+
+        function closeDropdown() {
+            dropdown.classList.remove('open');
+            trigger.setAttribute('aria-expanded', 'false');
+            dropdown.closest('.detail-item-box')?.classList.remove('is-dropdown-open');
+        }
+
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = dropdown.classList.contains('open');
+            if (isOpen) {
+                closeDropdown();
+            } else {
+                openDropdown();
+            }
+        });
+
+        selectEl.addEventListener('change', () => {
+            updateSelectedDisplay();
+        });
+
+        populateItems();
+
+        selectEl.parentNode.insertBefore(dropdown, selectEl.nextSibling);
+
+        selectEl._customDropdown = dropdown;
+        selectEl._updateDropdownDisplay = updateSelectedDisplay;
+        selectEl._populateDropdownItems = populateItems;
+    }
+
+    function initCustomDropdowns() {
+        const selectElements = [
+            document.getElementById('courseSelect'),
+            document.getElementById('fieldTypeSelect'),
+            document.getElementById('directionSelect'),
+            document.getElementById('distSelect'),
+            document.getElementById('weatherSelect'),
+            document.getElementById('conditionSelect')
+        ];
+
+        selectElements.forEach(selectEl => {
+            if (!selectEl) return;
+            enhanceSelectToCustomDropdown(selectEl);
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.custom-dropdown')) {
+                document.querySelectorAll('.custom-dropdown.open').forEach(d => {
+                    d.classList.remove('open');
+                    d.querySelector('.dropdown-trigger')?.setAttribute('aria-expanded', 'false');
+                    d.closest('.detail-item-box')?.classList.remove('is-dropdown-open');
+                });
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.custom-dropdown.open').forEach(d => {
+                    d.classList.remove('open');
+                    d.querySelector('.dropdown-trigger')?.setAttribute('aria-expanded', 'false');
+                    d.closest('.detail-item-box')?.classList.remove('is-dropdown-open');
+                });
+            }
+        });
     }
 
     const distCustomWrapper = document.getElementById('distCustomWrapper');
@@ -698,6 +907,55 @@ document.addEventListener('DOMContentLoaded', () => {
     setupCustomDetailPair(distSelect, distInput, 'detailDist', distCustomWrapper, null, onCourseOrDistChange);
     setupStandardDetailSelect(weatherSelect, 'detailWeather');
     setupCustomDetailPair(conditionSelect, conditionInput, 'detailCondition', conditionCustomWrapper);
+
+    initCustomDropdowns();
+
+    // Detail item enable checkboxes setup
+    const enableCheckboxes = {
+        course: document.getElementById('enableCourse'),
+        fieldType: document.getElementById('enableFieldType'),
+        direction: document.getElementById('enableDirection'),
+        dist: document.getElementById('enableDist'),
+        weather: document.getElementById('enableWeather'),
+        condition: document.getElementById('enableCondition')
+    };
+
+    const detailBoxes = {
+        course: document.getElementById('detailBoxCourse'),
+        fieldType: document.getElementById('detailBoxFieldType'),
+        direction: document.getElementById('detailBoxDirection'),
+        dist: document.getElementById('detailBoxDist'),
+        weather: document.getElementById('detailBoxWeather'),
+        condition: document.getElementById('detailBoxCondition')
+    };
+
+    Object.entries(enableCheckboxes).forEach(([key, cb]) => {
+        if (!cb) return;
+        cb.addEventListener('change', (e) => {
+            state.detailEnabled[key] = e.target.checked;
+            if (detailBoxes[key]) {
+                if (e.target.checked) {
+                    detailBoxes[key].classList.remove('is-disabled');
+                } else {
+                    detailBoxes[key].classList.add('is-disabled');
+                }
+            }
+            syncLine2FromDetails();
+        });
+    });
+
+    // カスタムショートカットリンクのイベント設定
+    document.querySelectorAll('.custom-shortcut-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = link.dataset.target;
+            const selectEl = document.getElementById(targetId);
+            if (selectEl) {
+                selectEl.value = 'custom';
+                selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+        });
+    });
 
     // Initial Line 2 Sync
     syncLine2FromDetails();
@@ -964,7 +1222,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderTextToCache() {
         textCacheCtx.clearRect(0, 0, textCacheCanvas.width, textCacheCanvas.height);
 
-        if (!state.textLine1 && !state.textLine2) return;
+        const hasLine1 = Boolean(state.textLine1 && state.textLine1.trim().length > 0);
+        const hasLine2 = Boolean(state.textLine2 && state.textLine2.trim().length > 0);
+        const layoutHasLine2 = hasLine2 || Boolean(state._gifHasLine2);
+
+        if (!hasLine1 && !hasLine2 && !layoutHasLine2) return;
 
         const fontStack = "'Noto Sans JP', -apple-system, sans-serif";
         const line1FontSize = state.textSizeLine1; // Line 1 font size (default 188px)
@@ -980,8 +1242,28 @@ document.addEventListener('DOMContentLoaded', () => {
         textCacheCtx.save();
         textCacheCtx.translate(centerX, centerY);
 
-        // Default base Y-position shifted 3% (+18px) down so slider posY=50% reflects the lowered position
-        const line1Y = -line1FontSize * 0.22 + (textCacheCanvas.height * 0.03);
+        // Base Y offset for vertical center alignment (matches default posY=50%)
+        const baseOffsetY = textCacheCanvas.height * 0.03;
+
+        let line1Y = baseOffsetY;
+        let line2Y = baseOffsetY;
+
+        if (hasLine1 && layoutHasLine2) {
+            // 日本語文字の実文字インク高さ係数（約75%）
+            const VISUAL_HEIGHT_RATIO = 0.75;
+            const line1VisualH = line1FontSize * VISUAL_HEIGHT_RATIO;
+            const line2VisualH = line2FontSize * VISUAL_HEIGHT_RATIO;
+
+            // 文字間の固定余白（34.5px）
+            const visualGap = 34.5;
+
+            // テキストブロック全体の視覚的高さ
+            const totalVisualHeight = line1VisualH + visualGap + line2VisualH;
+
+            // 各行の中心Y座標（文字の視覚的中心をベースに上下中央揃え配置）
+            line1Y = -totalVisualHeight / 2 + line1VisualH / 2 + baseOffsetY;
+            line2Y = totalVisualHeight / 2 - line2VisualH / 2 + baseOffsetY;
+        }
 
         // 1. Line 1: Race Name (長体 base scaleX = 0.85 with bracket margin kerning)
         if (state.textLine1) {
@@ -1042,7 +1324,7 @@ document.addEventListener('DOMContentLoaded', () => {
             textCacheCtx.restore();
         }
 
-        // 2. Line 2: Race Details (Constant center-to-center distance from Line 1)
+        // 2. Line 2: Race Details
         if (state.textLine2) {
             const line2Text = state.textLine2;
             textCacheCtx.font = fontLine2;
@@ -1055,10 +1337,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (rawLine2Width > maxAllowedWidth) {
                 line2ScaleX = maxAllowedWidth / rawLine2Width;
             }
-
-            // Fixed distance from Line 1 center (line1Y) to Line 2 center: 120px
-            const FIXED_CENTER_DISTANCE = 120;
-            const line2Y = line1Y + FIXED_CENTER_DISTANCE;
 
             textCacheCtx.save();
             textCacheCtx.translate(0, line2Y);
@@ -1084,23 +1362,25 @@ document.addEventListener('DOMContentLoaded', () => {
         const effImgH = isSwapped ? state.bgImage.width : state.bgImage.height;
 
         const imgRatio = effImgW / effImgH;
-        const canvasRatio = canvas.width / canvas.height;
+        const targetW = canvas.width;
+        const targetH = state.showLetterbox ? (canvas.height * (1 - 0.24)) : canvas.height;
+        const targetRatio = targetW / targetH;
         let renderW, renderH;
 
-        if (imgRatio > canvasRatio) {
-            renderH = canvas.height;
-            renderW = canvas.height * imgRatio;
+        if (imgRatio > targetRatio) {
+            renderH = targetH;
+            renderW = targetH * imgRatio;
         } else {
-            renderW = canvas.width;
-            renderH = canvas.width / imgRatio;
+            renderW = targetW;
+            renderH = targetW / imgRatio;
         }
 
         const scaleRatio = state.imgScale / 100;
         const finalW = renderW * scaleRatio;
         const finalH = renderH * scaleRatio;
 
-        const maxOffsetX = (finalW - canvas.width) / 2;
-        const maxOffsetY = (finalH - canvas.height) / 2;
+        const maxOffsetX = Math.max(0, (finalW - targetW) / 2);
+        const maxOffsetY = Math.max(0, (finalH - targetH) / 2);
 
         const maxImgX = (maxOffsetX / canvas.width) * 100;
         const maxImgY = (maxOffsetY / canvas.height) * 100;
@@ -1130,18 +1410,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const effImgH = isSwapped ? state.bgImage.width : state.bgImage.height;
 
             const imgRatio = effImgW / effImgH;
-            const canvasRatio = canvas.width / canvas.height;
+            const targetW = canvas.width;
+            const targetH = state.showLetterbox ? (canvas.height * (1 - 0.24)) : canvas.height;
+            const targetRatio = targetW / targetH;
             let renderW, renderH, baseRenderX, baseRenderY;
 
-            if (imgRatio > canvasRatio) {
-                renderH = canvas.height;
-                renderW = canvas.height * imgRatio;
+            if (imgRatio > targetRatio) {
+                renderH = targetH;
+                renderW = targetH * imgRatio;
                 baseRenderX = (canvas.width - renderW) / 2;
-                baseRenderY = 0;
+                baseRenderY = (canvas.height - renderH) / 2;
             } else {
-                renderW = canvas.width;
-                renderH = canvas.width / imgRatio;
-                baseRenderX = 0;
+                renderW = targetW;
+                renderH = targetW / imgRatio;
+                baseRenderX = (canvas.width - renderW) / 2;
                 baseRenderY = (canvas.height - renderH) / 2;
             }
 
@@ -1307,6 +1589,13 @@ document.addEventListener('DOMContentLoaded', () => {
         img.onload = () => {
             state.bgImage = img;
             state.imgRotation = 0;
+            state.imgX = 0;
+            state.imgY = 0;
+            state.imgScale = 100;
+            if (imgScaleInput) {
+                imgScaleInput.value = 100;
+                imgScaleVal.textContent = '100%';
+            }
             renderCanvasSafe(50);
             showToast('画像を読み込みました');
             scrollToRaceName();
@@ -1353,6 +1642,13 @@ document.addEventListener('DOMContentLoaded', () => {
             img.onload = () => {
                 state.bgImage = img;
                 state.imgRotation = 0;
+                state.imgX = 0;
+                state.imgY = 0;
+                state.imgScale = 100;
+                if (imgScaleInput) {
+                    imgScaleInput.value = 100;
+                    imgScaleVal.textContent = '100%';
+                }
                 renderCanvasSafe(50);
                 showToast('画像を読み込みました');
                 if (typeof scrollToRaceName === 'function') {
@@ -1655,6 +1951,14 @@ document.addEventListener('DOMContentLoaded', () => {
         state.imgBrightness = 130;
         state.dragTarget = 'image';
         state.isCanvasLocked = false;
+        Object.keys(state.detailEnabled).forEach(key => {
+            state.detailEnabled[key] = true;
+        });
+        Object.entries(enableCheckboxes).forEach(([key, cb]) => {
+            if (cb) cb.checked = true;
+            if (detailBoxes[key]) detailBoxes[key].classList.remove('is-disabled');
+        });
+        syncLine2FromDetails();
 
         if (letterboxCheckbox) letterboxCheckbox.checked = true;
         if (letterboxToggle) letterboxToggle.classList.add('is-active');
@@ -1869,6 +2173,7 @@ document.addEventListener('DOMContentLoaded', () => {
             for (const cfg of frameConfigs) {
                 state.textLine1 = cfg.showLine1 ? origLine1 : '';
                 state.textLine2 = cfg.showLine2 ? origLine2 : '';
+                state._gifHasLine2 = Boolean(origLine2 && origLine2.trim().length > 0);
                 isTextCacheDirty = true;
                 renderCanvas();
 
@@ -1880,6 +2185,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Restore original state and re-render the live preview
+            delete state._gifHasLine2;
             state.textLine1 = origLine1;
             state.textLine2 = origLine2;
             isTextCacheDirty = true;
