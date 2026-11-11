@@ -1133,6 +1133,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const distance = (row.distance || '').trim();
                 const direction = getDirectionLabel(row.direction || '');
                 const isPrimary = String(row.is_primary).trim().toLowerCase() !== 'false';
+                const note = !isPrimary && row.note ? row.note.trim() : '';
 
                 if (isDuplicateOfUma(name, kana, track, fieldType, distance, direction)) {
                     return;
@@ -1143,6 +1144,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     seenExternalKeys.add(jpKey);
                     const jpItem = {
                         name: name,
+                        displayName: name,
                         kana: kana,
                         grade: grade,
                         track: track,
@@ -1150,7 +1152,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         distance: distance,
                         direction: direction,
                         source: source,
-                        isPrimary: isPrimary
+                        isPrimary: isPrimary,
+                        note: note
                     };
                     if (isPrimary) {
                         externalPrimaryList.push(jpItem);
@@ -1165,6 +1168,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         seenExternalKeys.add(enKey);
                         const enItem = {
                             name: nameEn,
+                            displayName: `${nameEn}（${name}）`,
                             subName: name,
                             kana: kana,
                             grade: grade,
@@ -1173,7 +1177,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             distance: distance,
                             direction: direction,
                             source: source,
-                            isPrimary: isPrimary
+                            isPrimary: isPrimary,
+                            note: note
                         };
                         if (isPrimary) {
                             externalPrimaryList.push(enItem);
@@ -1259,19 +1264,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 const mappedGrade = mapCsvGradeToUiGrade(match.grade, match.source);
                 const gradeClass = getGradeBadgeClass(match.grade);
                 const badgeHtml = mappedGrade ? `<span class="suggestion-grade-badge grade-${gradeClass}">${mappedGrade}</span>` : '';
+                const dispName = match.displayName || match.name;
                 const raceInfoText = [match.track, match.fieldType, match.direction, match.distance].filter(Boolean).join(' ');
+                const noteText = (!match.isPrimary && match.note) ? match.note : '';
+
                 const mobileInfoHtml = raceInfoText ? `<span class="suggestion-sub-value suggestion-info-mobile">${raceInfoText}</span>` : '';
-                const subNameHtml = match.subName ? `<span class="suggestion-sub-value suggestion-sub-name">${match.subName}</span>` : '';
-                const desktopInfoHtml = raceInfoText ? `<span class="suggestion-sub-value suggestion-info-desktop">${raceInfoText}</span>` : '';
+                const mobileNoteHtml = noteText ? `<span class="suggestion-sub-value suggestion-note-mobile">${noteText}</span>` : '';
+
+                const desktopInfoSpan = raceInfoText ? `<span class="suggestion-sub-value">${raceInfoText}</span>` : '';
+                const desktopNoteSpan = noteText ? `<span class="suggestion-sub-value suggestion-note-desktop">${noteText}</span>` : '';
+                const desktopInfoHtml = (desktopInfoSpan || desktopNoteSpan)
+                    ? `<div class="suggestion-info-desktop">${desktopInfoSpan}${desktopNoteSpan}</div>`
+                    : '';
 
                 div.innerHTML = `
                     <div class="suggestion-item-inner">
                         <div class="suggestion-main-row">
                             ${badgeHtml}
                             <div class="suggestion-title-col">
-                                <span class="suggestion-race-name">${match.name}</span>
+                                <span class="suggestion-race-name">${dispName}</span>
                                 ${mobileInfoHtml}
-                                ${subNameHtml}
+                                ${mobileNoteHtml}
                             </div>
                         </div>
                         ${desktopInfoHtml}
