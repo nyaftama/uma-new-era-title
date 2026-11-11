@@ -57,9 +57,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Inputs Line 1 with Autocomplete
     const textLine1Input = document.getElementById('textLine1');
+    const textLine1CharNote = document.querySelector('label[for="textLine1"] .form-label-note') || document.querySelector('.form-label-note');
     const clearRaceInputBtn = document.getElementById('clearRaceInputBtn');
     const raceSuggestionsBox = document.getElementById('raceSuggestionsBox');
     const textLine1Error = document.getElementById('textLine1Error');
+
+    function updateLine1CharCount() {
+        if (!textLine1CharNote) return;
+        const len = textLine1Input ? textLine1Input.value.length : (state.textLine1 || '').length;
+        textLine1CharNote.textContent = `${len}/50文字`;
+    }
 
     // Detail Selects & Custom Inputs (6 items)
     const courseSelect = document.getElementById('courseSelect');
@@ -959,6 +966,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial Line 2 Sync
     syncLine2FromDetails();
+    updateLine1CharCount();
 
     if (clearRaceInputBtn && textLine1Input) {
         clearRaceInputBtn.style.display = textLine1Input.value ? 'block' : 'none';
@@ -995,12 +1003,35 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Race List CSV & Autocomplete Suggestion Logic ---
     let allRaceList = [];
 
-    function mapCsvGradeToUiGrade(grade) {
+    function mapCsvGradeToUiGrade(grade, source) {
         if (!grade) return '';
         const g = grade.trim();
-        if (g === 'G1' || g === 'G2' || g === 'G3' || g === 'OP' || g === 'EX') return g;
-        if (g === 'Pre-OP') return 'Pre-OP';
-        return '';
+        if (!g || g === '--') return '';
+
+        if (!source || source === 'uma') {
+            if (g === 'G1' || g === 'G2' || g === 'G3' || g === 'OP' || g === 'EX') return g;
+            if (g === 'Pre-OP') return 'Pre-OP';
+            return '';
+        }
+
+        const prefixMap = {
+            jra: 'JRA',
+            nar: 'NAR',
+            overseas: '海外'
+        };
+        const prefix = prefixMap[source] || '';
+        return prefix ? `${prefix} ${g}` : g;
+    }
+
+    function getGradeBadgeClass(grade) {
+        if (!grade) return 'op';
+        const g = grade.trim().toUpperCase();
+        if (['G1', 'JPN1', 'BG1', 'H1', 'M1', 'S1', 'SP1', '重賞1'].includes(g)) return 'g1';
+        if (['G2', 'JPN2', 'BG2', 'H2', 'M2', 'S2', 'SP2', '重賞2'].includes(g)) return 'g2';
+        if (['G3', 'JPN3', 'BG3', 'H3', 'M3', 'S3', 'SP3'].includes(g)) return 'g3';
+        if (g === 'EX') return 'ex';
+        if (g === 'PRE-OP') return 'pre_op';
+        return 'op';
     }
 
     function getDirectionLabel(dirRaw) {
@@ -1019,42 +1050,188 @@ document.addEventListener('DOMContentLoaded', () => {
         return d;
     }
 
+    function isDirectionCompatible(dirOther, dirUma) {
+        if (!dirOther || !dirUma) return dirOther === dirUma;
+        if (dirOther === dirUma) return true;
+        if (dirUma.startsWith(dirOther)) return true;
+        return false;
+    }
+
+    async function fetchCsvRows(url) {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) return [];
+            const csvText = await response.text();
+            if (typeof Papa === 'undefined') return [];
+            return Papa.parse(csvText, { header: true, skipEmptyLines: true }).data || [];
+        } catch (e) {
+            console.warn(`Could not load ${url}:`, e);
+            return [];
+        }
+    }
+
     async function loadRaceList() {
         try {
-            const response = await fetch('data/race_list.csv');
-            if (!response.ok) return;
-            const csvText = await response.text();
             if (typeof Papa === 'undefined') return;
+            const versionBadge = document.querySelector('.version-badge');
+            const version = versionBadge ? versionBadge.textContent.trim().replace(/^v/, '') : '';
+            const queryParam = version ? `?v=${version}` : '';
 
-            const csvData = Papa.parse(csvText, { header: true, skipEmptyLines: true }).data;
-            const uniqueMap = {};
+            const [umaData, jraData, narData, overseasData] = await Promise.all([
+                fetchCsvRows(`data/race_list.csv${queryParam}`),
+                fetchCsvRows(`data/race_list_jra.csv${queryParam}`),
+                fetchCsvRows(`data/race_list_nar.csv${queryParam}`),
+                fetchCsvRows(`data/race_list_overseas.csv${queryParam}`)
+            ]);
 
-            csvData.forEach(row => {
-                const name = row.race_name;
-                if (!name || uniqueMap[name]) return;
-                uniqueMap[name] = {
+            const umaUniqueMap = {};
+            const umaList = [];
+
+            umaData.forEach(row => {
+                const name = row.race_name ? row.race_name.trim() : '';
+                if (!name || umaUniqueMap[name]) return;
+                const item = {
                     name: name,
-                    kana: row.race_name_kana || '',
-                    grade: row.race_grade || '',
-                    track: row.race_track || '',
-                    fieldType: row.fleld_type || '',
-                    distance: row.distance || '',
-                    direction: getDirectionLabel(row.direction || '')
+                    kana: (row.race_name_kana || '').trim(),
+                    grade: (row.race_grade || '').trim(),
+                    track: (row.race_track || '').trim(),
+                    fieldType: (row.fleld_type || row.field_type || '').trim(),
+                    distance: (row.distance || '').trim(),
+                    direction: getDirectionLabel(row.direction || ''),
+                    source: 'uma',
+                    isPrimary: true
                 };
+                umaUniqueMap[name] = item;
+                umaList.push(item);
             });
 
-            allRaceList = Object.values(uniqueMap);
+            function isDuplicateOfUma(name, kana, track, fieldType, distance, direction) {
+                return umaList.some(u => {
+                    const nameOrKanaMatch = (u.name === name) || (kana && u.kana && u.kana === kana);
+                    if (!nameOrKanaMatch) return false;
+                    return (
+                        u.track === track &&
+                        u.fieldType === fieldType &&
+                        u.distance === distance &&
+                        isDirectionCompatible(direction, u.direction)
+                    );
+                });
+            }
+
+            const externalPrimaryList = [];
+            const externalSecondaryList = [];
+            const seenExternalKeys = new Set();
+
+            function addExternalRow(row, source) {
+                const name = row.race_name ? row.race_name.trim() : '';
+                if (!name) return;
+                const kana = (row.race_name_kana || '').trim();
+                const nameEn = (row.race_name_en || '').trim();
+                const grade = (row.race_grade || '').trim();
+                const track = (row.race_track || '').trim();
+                const fieldType = (row.field_type || row.fleld_type || '').trim();
+                const distance = (row.distance || '').trim();
+                const direction = getDirectionLabel(row.direction || '');
+                const isPrimary = String(row.is_primary).trim().toLowerCase() !== 'false';
+
+                if (isDuplicateOfUma(name, kana, track, fieldType, distance, direction)) {
+                    return;
+                }
+
+                const jpKey = `${source}|${name}|${track}|${fieldType}|${distance}|${direction}`;
+                if (!seenExternalKeys.has(jpKey)) {
+                    seenExternalKeys.add(jpKey);
+                    const jpItem = {
+                        name: name,
+                        kana: kana,
+                        grade: grade,
+                        track: track,
+                        fieldType: fieldType,
+                        distance: distance,
+                        direction: direction,
+                        source: source,
+                        isPrimary: isPrimary
+                    };
+                    if (isPrimary) {
+                        externalPrimaryList.push(jpItem);
+                    } else {
+                        externalSecondaryList.push(jpItem);
+                    }
+                }
+
+                if (source === 'overseas' && nameEn) {
+                    const enKey = `${source}|${nameEn}|${track}|${fieldType}|${distance}|${direction}`;
+                    if (!seenExternalKeys.has(enKey)) {
+                        seenExternalKeys.add(enKey);
+                        const enItem = {
+                            name: nameEn,
+                            subName: name,
+                            kana: kana,
+                            grade: grade,
+                            track: track,
+                            fieldType: fieldType,
+                            distance: distance,
+                            direction: direction,
+                            source: source,
+                            isPrimary: isPrimary
+                        };
+                        if (isPrimary) {
+                            externalPrimaryList.push(enItem);
+                        } else {
+                            externalSecondaryList.push(enItem);
+                        }
+                    }
+                }
+            }
+
+            jraData.forEach(row => addExternalRow(row, 'jra'));
+            narData.forEach(row => addExternalRow(row, 'nar'));
+            overseasData.forEach(row => addExternalRow(row, 'overseas'));
+
+            allRaceList = [
+                ...umaList,
+                ...externalPrimaryList,
+                ...externalSecondaryList
+            ];
             setupRaceNameSuggestion();
         } catch (err) {
-            console.warn('Could not load race_list.csv:', err);
+            console.warn('Could not load race lists:', err);
         }
     }
 
     function setupRaceNameSuggestion() {
         if (!textLine1Input || !raceSuggestionsBox || !clearRaceInputBtn) return;
 
+        function getMatchingRaces(keyword) {
+            if (!keyword || allRaceList.length === 0) return [];
+            const normalizedKw = normalizeText(keyword);
+            const rawMatches = allRaceList.filter(item => {
+                const nameLower = item.name.toLowerCase();
+                const subNameLower = item.subName ? item.subName.toLowerCase() : '';
+                const kanaLower = item.kana ? item.kana.toLowerCase() : '';
+                if (nameLower.includes(keyword) || subNameLower.includes(keyword) || kanaLower.includes(keyword)) return true;
+                if (normalizedKw) {
+                    if (normalizeText(item.name).includes(normalizedKw)) return true;
+                    if (item.subName && normalizeText(item.subName).includes(normalizedKw)) return true;
+                    if (item.kana && normalizeText(item.kana).includes(normalizedKw)) return true;
+                }
+                return false;
+            });
+
+            // 優先順位: 1. race_list.csv (uma) かつ isPrimary -> 2. 他CSVのisPrimary=true -> 3. isPrimary=false (過去・代替開催)
+            return rawMatches.sort((a, b) => {
+                const aPri = a.isPrimary !== false ? 0 : 1;
+                const bPri = b.isPrimary !== false ? 0 : 1;
+                if (aPri !== bPri) return aPri - bPri;
+                const aSrc = a.source === 'uma' ? 0 : 1;
+                const bSrc = b.source === 'uma' ? 0 : 1;
+                return aSrc - bSrc;
+            });
+        }
+
         function renderRaceSuggestions(val) {
             state.textLine1 = val;
+            updateLine1CharCount();
             const keyword = val.toLowerCase().trim();
             raceSuggestionsBox.innerHTML = '';
 
@@ -1066,10 +1243,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const matches = allRaceList.filter(item =>
-                item.name.toLowerCase().includes(keyword) ||
-                (item.kana && item.kana.toLowerCase().includes(keyword))
-            ).slice(0, 5);
+            const matches = getMatchingRaces(keyword).slice(0, 5);
 
             if (matches.length === 0) {
                 raceSuggestionsBox.style.display = 'none';
@@ -1082,17 +1256,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 const div = document.createElement('div');
                 div.className = 'suggestion-item';
 
-                const mappedGrade = mapCsvGradeToUiGrade(match.grade);
-                const gradeClass = match.grade ? match.grade.toLowerCase().replace('-', '_') : '';
+                const mappedGrade = mapCsvGradeToUiGrade(match.grade, match.source);
+                const gradeClass = getGradeBadgeClass(match.grade);
                 const badgeHtml = mappedGrade ? `<span class="suggestion-grade-badge grade-${gradeClass}">${mappedGrade}</span>` : '';
+                const raceInfoText = [match.track, match.fieldType, match.direction, match.distance].filter(Boolean).join(' ');
+                const mobileInfoHtml = raceInfoText ? `<span class="suggestion-sub-value suggestion-info-mobile">${raceInfoText}</span>` : '';
+                const subNameHtml = match.subName ? `<span class="suggestion-sub-value suggestion-sub-name">${match.subName}</span>` : '';
+                const desktopInfoHtml = raceInfoText ? `<span class="suggestion-sub-value suggestion-info-desktop">${raceInfoText}</span>` : '';
 
                 div.innerHTML = `
-                    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-                        <div style="display: flex; align-items: center; gap: 6px;">
+                    <div class="suggestion-item-inner">
+                        <div class="suggestion-main-row">
                             ${badgeHtml}
-                            <span style="font-weight: 700;">${match.name}</span>
+                            <div class="suggestion-title-col">
+                                <span class="suggestion-race-name">${match.name}</span>
+                                ${mobileInfoHtml}
+                                ${subNameHtml}
+                            </div>
                         </div>
-                        <span class="suggestion-sub-value" style="font-size: 0.8rem; color: #888; white-space: nowrap; margin-left: 10px;">${match.track} ${match.fieldType}${match.direction ? ' ' + match.direction : ''}${match.distance ? ' ' + match.distance : ''}</span>
+                        ${desktopInfoHtml}
                     </div>
                 `;
 
@@ -1133,10 +1315,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 const keyword = textLine1Input.value.toLowerCase().trim();
-                const matches = allRaceList.filter(item =>
-                    item.name.toLowerCase().includes(keyword) ||
-                    (item.kana && item.kana.toLowerCase().includes(keyword))
-                );
+                const matches = getMatchingRaces(keyword);
                 if (matches.length === 1) {
                     selectRaceSuggestion(matches[0]);
                 } else {
@@ -1150,6 +1329,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clearRaceInputBtn.addEventListener('click', () => {
             textLine1Input.value = '';
             state.textLine1 = '';
+            updateLine1CharCount();
             clearRaceInputBtn.style.display = 'none';
             raceSuggestionsBox.innerHTML = '';
             raceSuggestionsBox.style.display = 'none';
@@ -1184,6 +1364,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function selectRaceSuggestion(match) {
         textLine1Input.value = match.name;
         state.textLine1 = match.name;
+        updateLine1CharCount();
         raceSuggestionsBox.innerHTML = '';
         raceSuggestionsBox.style.display = 'none';
         clearRaceInputBtn.style.display = 'block';
@@ -1257,12 +1438,17 @@ document.addEventListener('DOMContentLoaded', () => {
             // 文字間の固定余白（34.5px）
             const visualGap = 34.5;
 
+            // 1行目にベースラインより下に伸びる文字（g, j, p, q, y, Q 等）が含まれる場合は2行目を下にオフセット
+            const rawLine1ForCheck = state._gifOrigLine1 !== undefined ? state._gifOrigLine1 : (state.textLine1 || '');
+            const hasDescender = /[gjpqyQ,;()[\]{}gｊｐｑｙＱ]/.test(rawLine1ForCheck);
+            const descenderOffset = hasDescender ? Math.round(line1FontSize * 0.14) : 0;
+
             // テキストブロック全体の視覚的高さ
             const totalVisualHeight = line1VisualH + visualGap + line2VisualH;
 
             // 各行の中心Y座標（文字の視覚的中心をベースに上下中央揃え配置）
             line1Y = -totalVisualHeight / 2 + line1VisualH / 2 + baseOffsetY;
-            line2Y = totalVisualHeight / 2 - line2VisualH / 2 + baseOffsetY;
+            line2Y = totalVisualHeight / 2 - line2VisualH / 2 + baseOffsetY + descenderOffset;
         }
 
         // 1. Line 1: Race Name (長体 base scaleX = 0.85 with bracket margin kerning)
@@ -1812,6 +1998,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const raceName = rawPreset;
             textLine1Input.value = raceName;
             state.textLine1 = raceName;
+            updateLine1CharCount();
             if (clearRaceInputBtn) clearRaceInputBtn.style.display = 'block';
 
             const presetData = RACE_PRESETS[rawPreset] || RACE_PRESETS[raceName];
@@ -2174,6 +2361,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 state.textLine1 = cfg.showLine1 ? origLine1 : '';
                 state.textLine2 = cfg.showLine2 ? origLine2 : '';
                 state._gifHasLine2 = Boolean(origLine2 && origLine2.trim().length > 0);
+                state._gifOrigLine1 = origLine1;
                 isTextCacheDirty = true;
                 renderCanvas();
 
@@ -2186,6 +2374,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Restore original state and re-render the live preview
             delete state._gifHasLine2;
+            delete state._gifOrigLine1;
             state.textLine1 = origLine1;
             state.textLine2 = origLine2;
             isTextCacheDirty = true;

@@ -338,6 +338,10 @@ label.form-label.form-label-flex {
     -webkit-font-feature-settings: "palt";
 }
 
+#textLine1 {
+    padding-right: 36px;
+}
+
 .input-text:focus {
     outline: none;
     border-color: var(--primary-color);
@@ -1548,6 +1552,81 @@ footer p {
     background-color: #f5f7fa;
 }
 
+.suggestion-item-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 10px;
+}
+
+.suggestion-main-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    flex: 1;
+}
+
+.suggestion-title-col {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1;
+}
+
+.suggestion-race-name {
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.3;
+}
+
+.suggestion-sub-value {
+    font-size: 0.8rem;
+    color: #888;
+    white-space: nowrap;
+    line-height: 1.3;
+}
+
+.suggestion-sub-name {
+    font-size: 0.75rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+}
+
+.suggestion-info-desktop {
+    flex-shrink: 0;
+}
+
+.suggestion-info-mobile {
+    display: none;
+    font-size: 0.75rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+}
+
+@media (max-width: 600px) {
+    .suggestion-main-row {
+        align-items: flex-start;
+    }
+
+    .suggestion-main-row .suggestion-grade-badge {
+        margin-top: 1px;
+    }
+
+    .suggestion-info-desktop {
+        display: none;
+    }
+
+    .suggestion-info-mobile {
+        display: block;
+    }
+}
+
 .suggestion-grade-badge {
     display: inline-block;
     font-size: 0.7rem;
@@ -1559,7 +1638,9 @@ footer p {
     text-align: center;
     min-width: 32px;
     box-sizing: border-box;
-    margin-right: 6px;
+    margin-right: 0;
+    flex-shrink: 0;
+    white-space: nowrap;
 }
 
 .suggestion-grade-badge.grade-g1 {

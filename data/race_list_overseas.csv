@@ -1,0 +1,120 @@
+race_name,race_name_kana,race_name_en,race_grade,race_track,field_type,distance,direction,is_primary,note
+アルマクトゥームチャレンジ,あるまくとぅーむちゃれんじ,Al Maktoum Challenge,G1,メイダン,ダート,1900m,左,true,通常開催
+センテナリースプリントカップ,せんてなりーすぷりんとかっぷ,Centenary Sprint Cup,G1,シャティン,芝,1200m,右,true,通常開催
+スチュワーズカップ,すちゅわーずかっぷ,Stewards' Cup,G1,シャティン,芝,1600m,右,true,通常開催
+サウジダービー,さうじだーびー,The Saudi Derby,G3,キングアブドゥルアジーズ,ダート,1600m,左,true,通常開催
+リヤドダートスプリント,りやどだーとすぷりんと,Riyadh Dirt Sprint,G2,キングアブドゥルアジーズ,ダート,1200m,左,true,通常開催
+1351ターフスプリント,いちさんごーいちたーふすぷりんと,The 1351 Turf Sprint,G2,キングアブドゥルアジーズ,芝,1351m,左,true,通常開催
+ネオムターフカップ,ねおむたーふかっぷ,The Neom Turf Cup,G1,キングアブドゥルアジーズ,芝,2100m,左,true,通常開催
+レッドシーターフハンデキャップ,れっどしーたーふはんできゃっぷ,The Red Sea Turf,G2,キングアブドゥルアジーズ,芝,3000m,左,true,通常開催
+サウジカップ,さうじかっぷ,The Saudi Cup,G1,キングアブドゥルアジーズ,ダート,1800m,左,true,通常開催
+クイーンズシルバージュビリーカップ,くいーんずしるばーじゅびりーかっぷ,Queen's Silver Jubilee Cup,G1,シャティン,芝,1400m,右,true,通常開催
+香港ゴールドカップ,ほんこんごーるどかっぷ,Hong Kong Gold Cup,G1,シャティン,芝,2000m,右,true,通常開催
+ランヴェットステークス,らんゔぇっとすてーくす,Ranvet Stakes,G1,ローズヒルガーデンズ,芝,2000m,右,true,通常開催
+オーストラリアンカップ,おーすとらりあんかっぷ,Australian Cup,G1,フレミントン,芝,2000m,左,true,通常開催
+タンクレッドステークス,たんくれっどすてーくす,H. E. Tancred Stakes,G1,ローズヒルガーデンズ,芝,2400m,右,true,通常開催
+ゴドルフィンマイル,ごどるふぃんまいる,Godolphin Mile,G2,メイダン,ダート,1600m,左,true,通常開催
+ドバイゴールドカップ,どばいごーるどかっぷ,Dubai Gold Cup,G2,メイダン,芝,3200m,左,true,通常開催
+UAEダービー,ゆーえーいーだーびー,UAE Derby,G2,メイダン,ダート,1900m,左,true,通常開催
+アルクオーツスプリント,あるくおーつすぷりんと,Al Quoz Sprint,G1,メイダン,芝,1200m,直線,true,通常開催
+ドバイゴールデンシャヒーン,どばいごーるでんしゃひーん,Dubai Golden Shaheen,G1,メイダン,ダート,1200m,左,true,通常開催
+ドバイターフ,どばいたーふ,Dubai Turf,G1,メイダン,芝,1800m,左,true,通常開催
+ドバイシーマクラシック,どばいしーまくらしっく,Dubai Sheema Classic,G1,メイダン,芝,2410m,左,true,通常開催
+ドバイワールドカップ,どばいわーるどかっぷ,Dubai World Cup,G1,メイダン,ダート,2000m,左,true,通常開催
+TJスミスステークス,てぃーじぇいすみすすてーくす,T. J. Smith Stakes,G1,ランドウィック,芝,1200m,右,true,通常開催
+クイーンエリザベスステークス,くいーんえりざべすすてーくす,Queen Elizabeth Stakes,G1,ランドウィック,芝,2000m,右,true,通常開催
+チェアマンズスプリントプライズ,ちぇあまんずすぷりんとぷらいず,Chairman's Sprint Prize,G1,シャティン,芝,1200m,右,true,通常開催
+香港チャンピオンズマイル,ほんこんちゃんぴおんずまいる,Champions Mile,G1,シャティン,芝,1600m,右,true,通常開催
+クイーンエリザベス2世カップ,くいーんえりざべすにせいかっぷ,Queen Elizabeth II Cup,G1,シャティン,芝,2000m,右,true,通常開催
+ガネー賞,がねーしょう,Prix Ganay,G1,ロンシャン,芝,2100m,右,true,通常開催
+英2000ギニー,えいにせんぎにー,2000 Guineas Stakes,G1,ニューマーケット,芝,1600m,直線,true,通常開催
+ターフクラシックステークス,たーふくらしっくすてーくす,Turf Classic Stakes,G1,チャーチルダウンズ,芝,1800m,左,true,通常開催
+ケンタッキーダービー,けんたっきーだーびー,Kentucky Derby,G1,チャーチルダウンズ,ダート,2000m,左,true,通常開催
+英1000ギニー,えいせんぎにー,1000 Guineas Stakes,G1,ニューマーケット,芝,1600m,直線,true,通常開催
+仏2000ギニー,ふつにせんぎにー,Poule d'Essai des Poulains,G1,ロンシャン,芝,1600m,右,true,通常開催
+仏1000ギニー,ふつせんぎにー,Poule d'Essai des Pouliches,G1,ロンシャン,芝,1600m,右,true,通常開催
+ロッキンジステークス,ろっきんじすてーくす,Lockinge Stakes,G1,ニューベリー,芝,1600m,直線,true,通常開催
+プリークネスステークス,ぷりーくねすすてーくす,Preakness Stakes,G1,ローレルパーク,ダート,1900m,左,true,通常開催
+アガカーン4世賞,あがかーんよんせいしょう,Prix Aga Khan IV,G1,ロンシャン,芝,1850m,右,true,通常開催
+愛2000ギニー,あいにせんぎにー,"Irish 2,000 Guineas",G1,カラ,芝,1600m,右,true,通常開催
+チャンピオンズ&チャターカップ,ちゃんぴおんずあんどちゃたーかっぷ,Hong Kong Champions & Chater Cup,G1,シャティン,芝,2400m,右,true,通常開催
+タタソールズゴールドカップ,たたそーるずごーるどかっぷ,Gold Cup,G1,カラ,芝,2100m,右,true,通常開催
+愛1000ギニー,あいせんぎにー,"Irish 1,000 Guineas",G1,カラ,芝,1600m,右,true,通常開催
+仏ダービー,ふつだーびー,Prix du Jockey Club,G1,シャンティイ,芝,2100m,右,true,通常開催
+英オークス,えいおーくす,Oaks,G1,エプソム,芝,2410m,左,true,通常開催
+コロネーションカップ,ころねーしょんかっぷ,Coronation Cup Stakes,G1,エプソム,芝,2410m,左,true,通常開催
+英ダービー,えいだーびー,Derby,G1,エプソム,芝,2410m,左,true,通常開催
+マンハッタンステークス,まんはったんすてーくす,Manhattan Stakes,G1,サラトガ,芝,1900m,左,true,通常開催
+ベルモントステークス,べるもんとすてーくす,Belmont Stakes,G1,サラトガ,ダート,2000m,左,true,通常開催
+仏オークス,ふつおーくす,Prix de Diane,G1,シャンティイ,芝,2100m,右,true,通常開催
+クイーンアンステークス,くいーんあんすてーくす,Queen Anne Stakes,G1,アスコット,芝,1600m,直線,true,通常開催
+セントジェームズパレスステークス,せんとじぇーむずぱれすすてーくす,St. James's Palace Stakes,G1,アスコット,芝,1590m,右,true,通常開催
+プリンスオブウェールズステークス,ぷりんすおぶうぇーるずすてーくす,Prince Of Wales's Stakes,G1,アスコット,芝,1990m,右,true,通常開催
+アスコットゴールドカップ,あすこっとごーるどかっぷ,Gold Cup Stakes,G1,アスコット,芝,3990m,右,true,通常開催
+クイーンエリザベス2世ジュビリーステークス,くいーんえりざべすにせいじゅびりーすてーくす,Queen Elizabeth II Jubilee Stakes,G1,アスコット,芝,1200m,直線,true,通常開催
+プリティポリーステークス,ぷりてぃぽりーすてーくす,Pretty Polly Stakes,G1,カラ,芝,2000m,右,true,通常開催
+愛ダービー,あいだーびー,Irish Derby,G1,カラ,芝,2400m,右,true,通常開催
+エクリプスステークス,えくりぷすすてーくす,Eclipse Stakes,G1,サンダウン,芝,1990m,右,true,通常開催
+サンクルー大賞,さんくるーだいしょう,Grand Prix de Saint-Cloud,G1,サンクルー,芝,2400m,左,true,通常開催
+ジュライカップ,じゅらいかっぷ,July Cup Stakes,G1,ニューマーケット,芝,1200m,直線,true,通常開催
+パリ大賞,ぱりだいしょう,Grand Prix de Paris,G1,ロンシャン,芝,2400m,右,true,通常開催
+アイリッシュオークス,あいりっしゅおーくす,Irish Oaks,G1,カラ,芝,2400m,右,true,通常開催
+キングジョージ6世&クイーンエリザベスステークス,きんぐじょーじろくせいあんどくいーんえりざべすすてーくす,King George VI and Queen Elizabeth Stakes,G1,アスコット,芝,2390m,右,true,通常開催
+グッドウッドカップ,ぐっどうっどかっぷ,Goodwood Cup Stakes,G1,グッドウッド,芝,3200m,右,true,通常開催
+サセックスステークス,させっくすすてーくす,Sussex Stakes,G1,グッドウッド,芝,1600m,右,true,通常開催
+ナッソーステークス,なっそーすてーくす,Nassau Stakes,G1,グッドウッド,芝,1980m,右,true,通常開催
+アーリントンミリオン,あーりんとんみりおん,Arlington Million Stakes,G1,コロニアルダウンズ,芝,2000m,左,true,通常開催
+ホイットニーステークス,ほいっとにーすてーくす,Whitney Stakes,G1,サラトガ,ダート,1800m,左,true,通常開催
+ベルリン大賞,べるりんだいしょう,Grosser Preis von Berlin,G1,ホッペガルテン,芝,2400m,右,true,通常開催
+モーリスドゲスト賞,もーりすどげすとしょう,Prix Maurice de Gheest,G1,ドーヴィル,芝,1300m,直線,true,通常開催
+クリストフクレメントターフステークス,くりすとふくれめんとたーふすてーくす,Christophe Clement Turf Stakes,G1,サラトガ,芝,2400m,左,true,通常開催
+ジャックルマロワ賞,じゃっくるまろわしょう,Prix Jacques le Marois,G1,ドーヴィル,芝,1600m,直線,true,通常開催
+インターナショナルステークス,いんたーなしょなるすてーくす,International Stakes,G1,ヨーク,芝,2050m,左,true,通常開催
+ヨークシャーオークス,よーくしゃーおーくす,Yorkshire Oaks Stakes,G1,ヨーク,芝,2370m,左,true,通常開催
+パシフィッククラシックステークス,ぱしふぃっくくらしっくすてーくす,Pacific Classic Stakes,G1,デルマー,ダート,2000m,左,true,通常開催
+トラヴァーズステークス,とらゔぁーずすてーくす,Travers Stakes,G1,サラトガ,ダート,2000m,左,true,通常開催
+バーデン大賞,ばーでんだいしょう,Grosser Preis von Baden,G1,バーデンバーデン,芝,2400m,左,true,通常開催
+ムーランドロンシャン賞,むーらんどろんしゃんしょう,Prix du Moulin de Longchamp,G1,ロンシャン,芝,1600m,右,true,通常開催
+ヴェルメイユ賞,ゔぇるめいゆしょう,Prix Vermeille,G1,ロンシャン,芝,2400m,右,true,通常開催
+英セントレジャー,えいせんとれじゃー,St. Leger Stakes,G1,ドンカスター,芝,2910m,左,true,通常開催
+メイトロンステークス,めいとろんすてーくす,Matron Stakes,G1,レパーズタウン,芝,1600m,左,true,通常開催
+アイリッシュチャンピオンステークス,あいりっしゅちゃんぴおんすてーくす,Irish Champion Stakes,G1,レパーズタウン,芝,2000m,左,true,通常開催
+マカイビーディーヴァステークス,まかいびーでぃーゔぁすてーくす,Makybe Diva Stakes,G1,フレミントン,芝,1600m,左,true,通常開催
+フライングファイブステークス,ふらいんぐふぁいぶすてーくす,Flying Five Stakes,G1,カラ,芝,1000m,直線,true,通常開催
+愛セントレジャー,あいせんとれじゃー,Irish St. Leger,G1,カラ,芝,2800m,右,true,通常開催
+ジョッキークラブゴールドカップ,じょっきーくらぶごーるどかっぷ,Jockey Club Gold Cup Stakes,G1,ベルモントパーク,ダート,2000m,左,true,通常開催
+ジョーハーシュターフクラシック,じょーはーしゅたーふくらしっく,Joe Hirsch Turf Classic Stakes,G1,ベルモントパーク,芝,2400m,左,true,通常開催
+オイロパ賞,おいろぱしょう,Preis von Europa,G1,ケルン,芝,2400m,右,true,通常開催
+凱旋門賞,がいせんもんしょう,Prix de l'Arc de Triomphe,G1,ロンシャン,芝,2400m,右,true,通常開催
+オペラ賞,おぺらしょう,Prix de l'Opera,G1,ロンシャン,芝,2000m,右,true,通常開催
+フォレ賞,ふぉれしょう,Prix de la Foret,G1,ロンシャン,芝,1400m,右,true,通常開催
+コーフィールドカップ,こーふぃーるどかっぷ,Caulfield Cup,G1,コーフィールド,芝,2400m,左,true,通常開催
+ジエベレスト,じえべれすと,The Everest,G1,ランドウィック,芝,1200m,右,true,通常開催
+豪キングチャールズ3世ステークス,ごうきんぐちゃーるずさんせいすてーくす,King Charles III Stakes,G1,ランドウィック,芝,1600m,右,true,通常開催
+英チャンピオンズロングディスタンスカップ,えいちゃんぴおんずろんぐでぃすたんすかっぷ,British Champions Long Distance Cup Stakes,G1,アスコット,芝,3190m,右,true,通常開催
+英チャンピオンズスプリントステークス,えいちゃんぴおんずすぷりんとすてーくす,British Champions Sprint Stakes,G1,アスコット,芝,1200m,直線,true,通常開催
+英チャンピオンズフィリーズ&メアズステークス,えいちゃんぴおんずふぃりーずあんどめあずすてーくす,British Champions Fillies & Mares Stakes,G1,アスコット,芝,2390m,右,true,通常開催
+クイーンエリザベス2世ステークス,くいーんえりざべすにせいすてーくす,Queen Elizabeth II Stakes,G1,アスコット,芝,1600m,直線,true,通常開催
+チャンピオンステークス,ちゃんぴおんすてーくす,Champion Stakes,G1,アスコット,芝,1990m,右,true,通常開催
+コックスプレート,こっくすぷれーと,W. S. Cox Plate,G1,フレミントン,芝,2040m,左,true,通常開催
+ロワイヤルオーク賞,ろわいやるおーくしょう,Prix Royal-Oak,G1,サンクルー,芝,3100m,左,true,通常開催
+ブリーダーズカップダートマイル,ぶりーだーずかっぷだーとまいる,Breeders' Cup Dirt Mile,G1,キーンランド,ダート,1600m,左,true,通常開催
+ブリーダーズカップターフスプリント,ぶりーだーずかっぷたーふすぷりんと,Breeders' Cup Turf Sprint,G1,キーンランド,芝,1100m,左,true,通常開催
+ブリーダーズカップスプリント,ぶりーだーずかっぷすぷりんと,Breeders' Cup Sprint,G1,キーンランド,ダート,1200m,左,true,通常開催
+ブリーダーズカップフィリー&メアターフ,ぶりーだーずかっぷふぃりーあんどめあたーふ,Breeders' Cup Filly & Mare Turf,G1,キーンランド,芝,1900m,左,true,通常開催
+ブリーダーズカップフィリー&メアスプリント,ぶりーだーずかっぷふぃりーあんどめあずすぷりんと,Breeders' Cup Filly & Mare Sprint,G1,キーンランド,ダート,1400m,左,true,通常開催
+ブリーダーズカップマイル,ぶりーだーずかっぷまいる,Breeders' Cup Mile,G1,キーンランド,芝,1600m,左,true,通常開催
+ブリーダーズカップディスタフ,ぶりーだーずかっぷでぃすたふ,Breeders' Cup Distaff,G1,キーンランド,ダート,1800m,左,true,通常開催
+ブリーダーズカップターフ,ぶりーだーずかっぷたーふ,Breeders' Cup Turf,G1,キーンランド,芝,2400m,左,true,通常開催
+ブリーダーズカップクラシック,ぶりーだーずかっぷくらしっく,Breeders' Cup Classic,G1,キーンランド,ダート,2000m,左,true,通常開催
+メルボルンカップ,めるぼるんかっぷ,Melbourne Cup,G1,フレミントン,芝,3200m,左,true,通常開催
+チャンピオンズスプリント,ちゃんぴおんずすぷりんと,Champions Sprint,G1,フレミントン,芝,1200m,直線,true,通常開催
+豪チャンピオンズマイル,ごうちゃんぴおんずまいる,Champions Mile,G1,フレミントン,芝,1600m,左,true,通常開催
+チャンピオンズステークス,ちゃんぴおんずすてーくす,Champions Stakes,G1,フレミントン,芝,2000m,左,true,通常開催
+香港ヴァーズ,ほんこんゔぁーず,Hong Kong Vase,G1,シャティン,芝,2400m,右,true,通常開催
+香港スプリント,ほんこんすぷりんと,Hong Kong Sprint,G1,シャティン,芝,1200m,右,true,通常開催
+香港マイル,ほんこんまいる,Hong Kong Mile,G1,シャティン,芝,1600m,右,true,通常開催
+香港カップ,ほんこんかっぷ,Hong Kong Cup,G1,シャティン,芝,2000m,右,true,通常開催
+凱旋門賞,がいせんもんしょう,Prix de l'Arc de Triomphe,G1,シャンティイ,芝,2400m,右,false,2016-2017年 ロンシャン競馬場改修に伴うシャンティイ代替開催
+ブリーダーズカップクラシック,ぶりーだーずかっぷくらしく,Breeders' Cup Classic,G1,サンタアニタパーク,ダート,2000m,左,false,過去開催場（サンタアニタ）
+ブリーダーズカップターフ,ぶりーだーずかっぷたーふ,Breeders' Cup Turf,G1,サンタアニタパーク,芝,2400m,左,false,過去開催場（サンタアニタ）
